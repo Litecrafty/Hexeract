@@ -1,5 +1,6 @@
 import vibe.d;
 import std.bitmanip : peek, nativeToBigEndian;
+import std.utf;
 
 /// Input stream operations
 public abstract class Readable {
@@ -109,51 +110,74 @@ public abstract class Readable {
 
         return result;
     }
+
+    /// Read a incoming string
+    protected string readString(int max = 32_767) {
+        const int size = readVarInt;
+
+        if (size > (max * 4) + 3) {
+            throw new Exception("String is too big");
+        }
+        const auto output = cast(string) readBytes(size);
+        validate(output);
+
+        return output;
+    }
 }
 
 /// IO stream operations
 public abstract class Writeable : Readable {
+    /// Write byte to outgoing connection
     protected void writeByte(byte b) {
         ubyte[1] o = [cast(ubyte) b];
         connection.write(o);
     }
 
+    /// Write unsigned byte to outgoing connection
     protected void writeUByte(ubyte b) {
         ubyte[1] o = [b];
         connection.write(o);
     }
 
+    /// Write boolean to outgoing connection
     protected void writeBool(bool input) {
         connection.write(nativeToBigEndian(input));
     }
 
+    /// Write short to outgoing connection
     protected void writeShort(short input) {
         connection.write(nativeToBigEndian(input));
     }
 
+    /// Write unsigned short to outgoing connection
     protected void writeUShort(ushort input) {
         connection.write(nativeToBigEndian(input));
     }
 
+    /// Write int to outgoing connection
     protected void writeInt(int input) {
         connection.write(nativeToBigEndian(input));
     }
 
+    /// Write float to outgoing connection
     protected void writeLong(long input) {
         connection.write(nativeToBigEndian(input));
     }
 
+    /// Write float to outgoing connection
     protected void writeFloat(float input) {
         connection.write(nativeToBigEndian(input));
     }
 
+    /// Write double to outgoing connection
     protected void writeDouble(double input) {
         connection.write(nativeToBigEndian(input));
     }
 
+    /// Write varint to outgoing connection
     protected void writeVarInt(int value) {
         do {
-            byte temp = cast(byte) (value & 0b01111111);
+            byte temp = cast(byte)(value & 0b01111111);
 
             value >>>= 7;
             if (value != 0) {
@@ -162,6 +186,19 @@ public abstract class Writeable : Readable {
             writeByte(temp);
         }
         while (value != 0);
+    }
+
+    /// Write string to outgoing connection
+    protected void writeString(string input, int max = 32_767) {
+        const ubyte[] bytes = cast(ubyte[]) input;
+        const long size = bytes.length;
+
+        if (size > (max * 4) + 3) {
+            throw new Exception("String is too big");
+        }
+
+        writeVarInt(cast(int) size);
+        connection.write(bytes);
     }
 }
 

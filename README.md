@@ -13,7 +13,7 @@ Work in progress, [Open source](https://en.wikipedia.org/wiki/Free_and_open-sour
 - [x] More soon™ We have some crazy ideas... ;)
 
 # Node distribution example
-Each server will load necessary chunks, but not the entire world.
+Each server will load necessary chunks, but not the entire world. Using graph theory, would be something like this:
 
 <img src="https://i.imgur.com/EILD6bY.png" width="300">
 
