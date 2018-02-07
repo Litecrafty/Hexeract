@@ -6,14 +6,15 @@ Work in progress, [Open source](https://en.wikipedia.org/wiki/Free_and_open-sour
 # Features
 - [X] Native perfomance (D Programming Language).
 - [X] Better memory management.
+- [X] It does not use a main tick, with the possibilities of concurrency of modern programming languages, this is no longer necessary
 - [ ] Allow multiple nodes sharing the same world.
 - [ ] All vanilla server features.
 - [X] Easy to use
 - [ ] Server side plugin and mod API (Send mod textures and models from server to client)
 - [x] More soon™ We have some crazy ideas... ;)
 
-# Node distribution example
-Each server will load necessary chunks, but not the entire world. Using graph theory, would be something like this:
+# Multi-node world sharing
+Each server will load necessary chunks, but not the entire world. Every user and chunk on the network is assigned a timestamp – the date and time when it was created. When a [network split](https://en.wikipedia.org/wiki/Netsplit) occurs, two users with on each side are free to use the same chunk or nick, but when the two sides are joined, only one can survive. Although this prevents desynchronization, it can lead to loss of changes, so it is more advisable to have stable nodes. Using graph theory, would be something like this:
 
 <img src="https://i.imgur.com/EILD6bY.png" width="300">
 
