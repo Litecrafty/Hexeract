@@ -9,6 +9,9 @@ public abstract class ConfigurationAdapter {
     protected int _port = 25565;
 
     @Read
+    protected int _compressionLevel = 128;
+
+    @Read
     protected string _host = "0.0.0.0";
 
     mixin(GenerateFieldAccessors);

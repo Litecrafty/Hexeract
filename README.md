@@ -14,7 +14,8 @@ Work in progress, [Open source](https://en.wikipedia.org/wiki/Free_and_open-sour
 
 # Node distribution example
 Each server will load necessary chunks, but not the entire world.
-<img src="https://i.imgur.com/EILD6bY.png" width="600">
+
+<img src="https://i.imgur.com/EILD6bY.png" width="300">
 
 # Compile
 

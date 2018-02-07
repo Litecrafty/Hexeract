@@ -10,10 +10,11 @@ public final class SDLConfigurationAdapter : ConfigurationAdapter {
         try {
             auto data = parseFile("configs/hexeract.sdl");
 
-            _host = data.getTagValue!string("bind-host", "0.0.0.0");
-            _port = data.getTagAttribute!int("bind-host", "port", 25565);
+            _host = data.getTagValue!string("bind-host", host);
+            _port = data.getTagAttribute!int("bind-host", "port", port);
 
-            _renderDistance = data.getTagValue!int("render-distance", 12);
+            _renderDistance = data.getTagValue!int("render-distance", renderDistance);
+            _compressionLevel = data.getTagValue!int("network-compression", compressionLevel);
         }
         catch (FileException e) {
             warning("Generating new configuration...");
@@ -29,6 +30,7 @@ public final class SDLConfigurationAdapter : ConfigurationAdapter {
         new Tag(data, null, "bind-host", [Value(host)], [port_tag]);
 
         new Tag(data, null, "render-distance", [Value(renderDistance)]);
+        new Tag(data, null, "network-compression", [Value(compressionLevel)]);
 
         import std.file : exists, mkdir, write;
 
