@@ -185,6 +185,27 @@ int readVarInt(ubyte[] buf) {
 }
 
 /// Read an incoming variable size integer
+int readVarInt(TCPConnection buf) {
+    int numRead;
+    int result;
+    byte read;
+
+    do {
+        read = buf.readByte;
+        const int value = (read & 0b01111111);
+        result |= (value << (7 * numRead));
+
+        numRead++;
+        if (numRead > 5) {
+            throw new Exception("VarInt is too big");
+        }
+    }
+    while ((read & 0b10000000) != 0);
+
+    return result;
+}
+
+/// Read an incoming variable size integer
 long readVarLong(ubyte[] buf) {
     int numRead;
     long result;
