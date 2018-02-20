@@ -16,23 +16,9 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-module configuration.configuration_adapter;
+module base;
 
-import accessors;
-
-/// Customizable configuration adapter
-public abstract class ConfigurationAdapter {
-    @Read @Write
-    protected int _renderDistance = 12;
-
-    @Read
-    protected int _port = 25565;
-
-    @Read
-    protected int _compressionLevel = 128;
-
-    @Read
-    protected string _host = "0.0.0.0";
-
-    mixin(GenerateFieldAccessors);
+public {
+    import base.chunk;
+    import base.block;
 }
