@@ -18,9 +18,10 @@
 */
 module protocol.packet;
 
-import std.bitmanip : read, append, nativeToBigEndian;
+import std.bitmanip : read, append, peek, nativeToBigEndian;
 import std.utf;
 import std.socket;
+import vibe.d;
 import accessors;
 
 /// Read an incoming byte
@@ -28,9 +29,22 @@ byte readUByte(ubyte[] buf) {
     return buf.read!ubyte;
 }
 
+/// Read an incoming byte
+byte readUByte(TCPConnection buf) {
+    ubyte[] output;
+    buf.read(output);
+
+    return output[0];
+}
+
 /// Read an incoming signed byte
 byte readByte(ubyte[] buf) {
     return buf.read!byte;
+}
+
+/// Read an incoming signed byte
+byte readByte(TCPConnection buf) {
+    return cast(byte) buf.readUByte;
 }
 
 /// Read `size` number of bytes from the buffer
@@ -42,6 +56,20 @@ byte[] readBytes(ubyte[] buf, ulong size) {
     }
 
     return o;
+}
+
+/// Read `size` number of bytes from the buffer
+byte[] readBytes(TCPConnection buf, ulong size) {
+
+    return cast(byte[]) buf.readUBytes(size);
+}
+
+/// Read `size` number of bytes from the buffer
+ubyte[] readUBytes(TCPConnection buf, ulong size) {
+    ubyte[] output = new ubyte[size];
+    buf.read(output);
+
+    return output;
 }
 
 /// Read `size` number of bytes from the buffer
@@ -60,9 +88,19 @@ bool readBoolean(ubyte[] buf) {
     return buf.read!bool;
 }
 
+/// Read an incoming boolean
+bool readBoolean(TCPConnection buf) {
+    return buf.readUBytes(1).peek!bool;
+}
+
 /// Read an incoming short
 short readShort(ubyte[] buf) {
     return buf.read!short;
+}
+
+/// Read an incoming short
+short readShort(TCPConnection buf) {
+    return buf.readUBytes(2).peek!short;
 }
 
 /// Read an incoming unsigned short
@@ -70,9 +108,19 @@ ushort readUShort(ubyte[] buf) {
     return buf.read!ushort;
 }
 
+/// Read an incoming unsigned short
+ushort readUShort(TCPConnection buf) {
+    return buf.readUBytes(2).peek!ushort;
+}
+
 /// Read an incoming integer
 int readInt(ubyte[] buf) {
     return buf.read!int;
+}
+
+/// Read an incoming integer
+int readInt(TCPConnection buf) {
+    return buf.readUBytes(4).peek!int;
 }
 
 /// Read an incoming unsigned integer
@@ -80,9 +128,19 @@ uint readUInt(ubyte[] buf) {
     return buf.read!uint;
 }
 
+/// Read an incoming unsigned integer
+uint readUInt(TCPConnection buf) {
+    return buf.readUBytes(4).peek!uint;
+}
+
 /// Read an incoming long
 long readLong(ubyte[] buf) {
     return buf.read!long;
+}
+
+/// Read an incoming long
+long readLong(TCPConnection buf) {
+    return buf.readUBytes(8).peek!long;
 }
 
 /// Read an incoming single-precision 32-bit floating point number
@@ -90,9 +148,19 @@ float readFloat(ubyte[] buf) {
     return buf.read!float;
 }
 
+/// Read an incoming single-precision 32-bit floating point number
+float readFloat(TCPConnection buf) {
+    return buf.readUBytes(4).peek!float;
+}
+
 /// Read an incoming double-precision 64-bit floating point number
 double readDouble(ubyte[] buf) {
     return buf.read!double;
+}
+
+/// Read an incoming double-precision 64-bit floating point number
+double readDouble(TCPConnection buf) {
+    return buf.readUBytes(8).peek!double;
 }
 
 /// Read an incoming variable size integer
@@ -118,6 +186,27 @@ int readVarInt(ubyte[] buf) {
 
 /// Read an incoming variable size integer
 long readVarLong(ubyte[] buf) {
+    int numRead;
+    long result;
+    byte read;
+
+    do {
+        read = buf.readByte;
+        const int value = (read & 0b01111111);
+        result |= (value << (7 * numRead));
+
+        numRead++;
+        if (numRead > 10) {
+            throw new Exception("VarLong is too big");
+        }
+    }
+    while ((read & 0b10000000) != 0);
+
+    return result;
+}
+
+/// Read an incoming variable size integer
+long readVarLong(TCPConnection buf) {
     int numRead;
     long result;
     byte read;
@@ -248,7 +337,7 @@ public abstract class Packet {
 
     /// Create an empty packet
     this() {
-        
+
     }
 
     /// Decode an incoming Packet
