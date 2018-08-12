@@ -4,13 +4,11 @@
 Work in progress, [Open source](https://en.wikipedia.org/wiki/Free_and_open-source_software) blazing fast [clean room](https://en.wikipedia.org/wiki/Clean_room_design) implementation of [Minecraft](https://minecraft.net) Server.
 
 # Features
-- [X] Native perfomance (D Programming Language).
+- [X] Native perfomance (Rust Programming Language).
 - [X] Better memory management.
-- [X] It does not use a main tick, with the possibilities of concurrency of modern programming languages, this is no longer necessary
-- [ ] Allow multiple nodes sharing the same world.
+- [ ] You can have multiple nodes sharing the same world.
 - [ ] All vanilla server features.
-- [X] Easy to use
-- [ ] Server side plugin and mod API (Send mod textures and models from server to client)
+- [ ] Server side add-ons API (Send custom textures and models from server to client)
 - [x] More soon™ We have some crazy ideas... ;)
 
 # Multi-node world sharing
@@ -18,11 +16,11 @@ Each server will load necessary chunks, but not the entire world. Every user and
 
 <img src="https://i.imgur.com/EILD6bY.png" width="300">
 
-# Compile
+# 🔧 Clone and Compile
 
- - Download `dub`, `ldc2` (or another D compiler), `gcc`
- - Install libraries: `libz-dev`, `libevent-dev` and `libssl-dev`
- - Build and run by using `dub` command.
+ - Clone the repository.
+ - Download and install [Rust](https://rustup.rs/) nightly.
+ - Build and run with `cargo run`
  - Profit!
 
 # Contributing
