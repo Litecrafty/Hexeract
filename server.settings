@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Hexeract" GeneratedClassName="server">
+  <Profiles />
+  <Settings>
+    <Setting Name="server_ip" Type="System.String" Scope="User">
+      <Value Profile="(Default)">*</Value>
+    </Setting>
+    <Setting Name="server_port" Type="System.UInt16" Scope="User">
+      <Value Profile="(Default)">25565</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
